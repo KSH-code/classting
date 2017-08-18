@@ -2,27 +2,40 @@
 <html>
 
 <head>
-    <!-- <script src="https://unpkg.com/vue"></script> -->
+    <style>
+        * {
+            text-align: center !important;
+        }
+    </style>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 
 <body>
-    <div id="users">
-        <table id="table">
-            <tr>
-                <th></th>
-                <th></th>
-            </tr>
-        </table>
-    </div>
+    <div id="table_div"></div>
+    <div id="chart_div"></div>
 </body>
-
 <script>
-    let table = new Vue({
-        el: '#table',
-        data: {
-            data: <%=data%>
-        }
-    })
+    google.charts.load('current', {
+        'packages': ['table']
+    });
+    google.charts.setOnLoadCallback(drawTable);
+
+    function drawTable() {
+        var t = new google.visualization.DataTable();
+        t.addColumn('string', '날짜');
+        t.addColumn('number', '총 가입자');
+        let demo = []
+        <% for(let i in data) { %>
+        demo.push(['<%=data[i].key_as_string%>', <%=data[i++].doc_count%>])
+        <% } %>
+        t.addRows(demo);
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+        table.draw(t, {
+            showRowNumber: true,
+            width: '100%',
+            height: '100%'
+        })
+    }
 </script>
 
 </html>
