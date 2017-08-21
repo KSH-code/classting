@@ -1,0 +1,119 @@
+<html>
+
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type='text/javascript'>
+        google.charts.load('current', {
+            'packages': ['annotationchart', 'table']
+        });
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawTable);
+        google.charts.setOnLoadCallback(drawTable2);
+        let arr = []
+        <% for(let i in data.dau){ 
+                let _arr=[]
+                _arr.push(data.dau[i][0])
+                _arr.push(data.dau[i][1])
+                _arr.push(data.wau[i][1])
+                _arr.push(data.mau[i][1])
+            %>
+        arr.push([<%=_arr%>])
+        <% } %>
+        for (let i in arr) {
+            arr[i][0] = new Date(arr[i][0].toString().substr(0, 4), arr[i][0].toString().substr(4, 2), arr[i][0].toString().substr(6, 2))
+        }
+
+        function drawTable() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', 'Date');
+            data.addColumn('number', 'DAU');
+            data.addColumn('number', 'WAU');
+            data.addColumn('number', 'MAU');
+            data.addRows(arr);
+
+            var table = new google.visualization.Table(document.getElementById('table_div'));
+
+            table.draw(data, {
+                width: 900
+            });
+        }
+
+        function drawTable2() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'interval');
+            data.addColumn('number', 'DAU');
+            data.addColumn('number', 'WAU');
+            data.addColumn('number', 'MAU');
+            let interval = []
+            let min = [Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE]
+            let max = [Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE]
+            let avg = [0, 0, 0]
+            for (let element of arr) {
+
+                if (element[1] < min[0]) {
+                    min[0] = element[1]
+                }
+                if (element[2] < min[1]) {
+                    min[1] = element[2]
+                }
+                if (element[3] < min[2]) {
+                    min[2] = element[3]
+                }
+
+                if (element[1] > max[0]) {
+                    max[0] = element[1]
+                }
+                if (element[2] > max[1]) {
+                    max[1] = element[2]
+                }
+                if (element[3] > max[2]) {
+                    max[2] = element[3]
+                }
+
+                avg[0] += element[1]
+                avg[1] += element[2]
+                avg[2] += element[3]
+            }
+            for (let i in avg) {
+                avg[i] = avg[i] / arr.length
+            }
+            data.addRows([
+                ['MIN', min[0], min[1], min[2]],
+                ['MAX', max[0], max[1], max[2]],
+                ['AVG', avg[0], avg[1], avg[2]]
+            ]);
+
+            var table = new google.visualization.Table(document.getElementById('table'));
+
+            table.draw(data, {
+                width: 900
+            });
+        }
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', 'Date');
+            data.addColumn('number', 'DAU');
+            data.addColumn('number', 'WAU');
+            data.addColumn('number', 'MAU');
+
+            data.addRows(arr);
+
+            var chart = new google.visualization.AnnotationChart(document.getElementById('chart_div'));
+
+            var options = {
+                displayAnnotations: true
+            };
+
+            chart.draw(data, options);
+        }
+    </script>
+</head>
+
+<body>
+    <div id='table_div'></div>
+    <div id='chart_div' style='width: 900px; height: 500px;'></div>
+    <div id="table"></div>
+</body>
+
+</html>

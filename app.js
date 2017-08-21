@@ -16,5 +16,5 @@ app.listen(4000, () => { console.log('start') })
        3. 다음의 내용 추가표현
          - min/max/avg
          - DAU는 전주대비 변화지표, ex) 6/2(금) -> 6/9(금)의 변화지표
-       4. filter 기능 (date range, role, country): role은 student/parent/teacher 
+       4. filter 기능 (date range, role, country): role은 student/parent/teacher ˜
      */

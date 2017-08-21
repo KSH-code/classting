@@ -6,6 +6,7 @@ const r = (app, _fs) => {
         res.render('index.html')
     })
     app.get('/users', Users)
+    app.get('/au', au)
 }
 
 function Users(req, res) {
@@ -21,5 +22,29 @@ function Users(req, res) {
     }
     console.log({ data: data })
     res.render('users.html', { 'data': data })
+}
+
+function au(req, res) {
+    let _mau = require('./data/monthly-active-users.json')
+    let _dau = require('./data/daily-active-users.json')
+    let _wau = require('./data/weekly-active-users.json')
+    let mau = [],
+        dau = [],
+        wau = []
+    for (let i in _mau) {
+        mau.push([_mau[i].key, _mau[i].doc_count])
+    }
+    for (let i in _wau) {
+        wau.push([_wau[i].key, _wau[i].doc_count])
+    }
+    for (let i in _dau) {
+        dau.push([_dau[i].key, _dau[i].doc_count])
+    }
+    let data = {}
+    data.mau = mau
+    data.dau = dau
+    data.wau = wau
+    console.log({ data: data })
+    res.render('au.html', { 'data': data })
 }
 module.exports = r
